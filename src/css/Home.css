@@ -1,5 +1,6 @@
 .home {
     padding: 2rem;
+    background-color: cornsilk;
 }
 
 .search {
@@ -19,7 +20,8 @@
     margin-bottom: 1.5rem;
     box-shadow: 0 1px 5px rgb(0 0 0 / 20%), 0 2px 2px rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%);
     cursor: pointer;
-    border-radius: 1rem !important;
+    background-color:whitesmoke !important;
+    border-radius: 0.5rem !important;
 }
 
 .product-card:hover {    

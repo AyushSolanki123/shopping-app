@@ -1,0 +1,36 @@
+.body {
+    padding: 1.5rem;
+    background-color: cornsilk;
+    height: 92vh;
+}
+
+.main-card {
+    padding: 1rem;
+    background-color: whitesmoke !important;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 0.5rem !important;
+}
+
+.product-title {
+    font-size: xx-large;
+    color: black;
+    font-weight: bold;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.product-details {
+    margin-left: 10vw;
+}
+
+.image {    
+    max-width: 30vw;
+    height: 100%;
+}
+
+.product-image {
+    height: 90%;
+    width: 90%;
+}

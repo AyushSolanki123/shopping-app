@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import FilterProducts from '../components/Home/FilterProducts';
-import NavBar from '../components/Home/NavBar';
+import NavBar from '../components/NavBar';
 import ProductList from '../components/Home/ProductList';
 import SearchProducts from '../components/Home/SearchProducts';
 import AddProductDialog from '../components/Home/AddProductDialog';
