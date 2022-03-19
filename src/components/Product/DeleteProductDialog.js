@@ -11,7 +11,7 @@ export class DeleteProductDialog extends Component {
                 backdrop="static"
             >
                 {/* Modal header containing header and title */}
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Delete Product</Modal.Title>
                     <CloseButton onClick={() => this.props.closeModal()} />
                 </Modal.Header>

@@ -32,9 +32,9 @@ class ProductCard extends Component {
                     // Card to show product details
                     (
                         <Card className='product-card' onClick={this.handleNavigate}>
-                            <Card.Img variant='top' src={this.props.product.image} className='product-card-image' />
+                            <Card.Img variant='top' src={this.props.product.imageUrl} className='product-card-image' />
                             <Card.Body>
-                                <Card.Title style={{ textOverflow: 'ellipsis' }}>{this.props.product.title}</Card.Title>
+                                <Card.Title style={{ textOverflow: 'ellipsis' }}>{this.props.product.name}</Card.Title>
                                 <Container>
                                     <Row className='justify-content-between'>
                                         <Col>Price: ${this.props.product.price}</Col>

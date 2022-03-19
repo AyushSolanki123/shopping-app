@@ -27,7 +27,7 @@ class Home extends Component {
 
     // GET call to API to get all products
     componentDidMount() {
-        axios.get('https://fakestoreapi.com/products')
+        axios.get('http://localhost:3000/api/product')
             .then((response)=>{
                 this.setState({
                     products: response.data,
