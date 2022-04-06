@@ -5,8 +5,9 @@ import ProductList from '../components/Home/ProductList';
 import SearchProducts from '../components/Home/SearchProducts';
 import AddProductDialog from '../components/Home/AddProductDialog';
 import Loading from '../components/Loading';
-import axios from 'axios';
+import capitalize from '../utils/CapitalizeText';
 import '../css/Home.css';
+import { createProduct, filterProduct, getAllProducts, listCategories, searchProduct } from '../utils/ApiActions';
 
 class Home extends Component {
 
@@ -19,6 +20,7 @@ class Home extends Component {
             search: "",
             currentFilter: 'All',
             showAddProductDialog: false, // Flag to show modal
+            categories: []
         }
         this.setFilter = this.setFilter.bind(this);
         this.searchProducts = this.searchProducts.bind(this);
@@ -27,57 +29,78 @@ class Home extends Component {
 
     // GET call to API to get all products
     componentDidMount() {
-        axios.get('http://localhost:3000/api/product')
+        getAllProducts()
             .then((response)=>{
                 this.setState({
                     products: response.data,
-                    filteredProducts: response.data,
-                    loading: false
+                    filteredProducts: response.data,                    
                 });
             })
             .catch((err) => {
                 console.log(err);
             });
+        
+        listCategories()
+            .then((response) => {
+                this.setState({
+                    categories: response.data,
+                    loading: false
+                });
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 
     // Filter products based on Category
     setFilter(value) {       
+        this.setState({ loading: true })
         if (value === "All") {
             this.setState({
                 currentFilter: value,
-                filteredProducts: this.state.products
+                filteredProducts: this.state.products,
+                loading: false
             });
         } else {
-            let filteredProducts = this.state.products.filter(product => {
-                return product.category === value.toLowerCase()
-            });
-            this.setState({
-                currentFilter: value,
-                filteredProducts: filteredProducts
-            });
+            filterProduct(value)
+                .then((response) => {
+                    this.setState({
+                        currentFilter: capitalize(response.data.category),
+                        filteredProducts: response.data.data,
+                        loading: false
+                    })
+                })
+                .catch(err => {
+                    this.setState({ loading: false })
+                    console.log(err)
+                })
         }
     }
 
     // Filter products based on search field
     searchProducts() {
-        let filteredProducts = this.state.products.filter(product => {
-            return product.title.toLowerCase().match(this.state.search.toLowerCase());
-        });
-        this.setState({
-            filteredProducts: filteredProducts
-        });
+        this.setState({ loading: true })
+        searchProduct(this.state.search.toLowerCase())
+            .then((response) => {
+                this.setState({
+                    filteredProducts: response.data.data,
+                    loading: false
+                })
+            })
+            .catch(err => {
+                this.setState({ loading: false })
+                console.log(err)
+            })
     }
 
     // POST request to API to create a product and returned product is push to array
     addProduct(product) {
-        var id = this.state.products.length;
-        product = Object.assign(product, { id: id + 1 })
-        axios.post('https://fakestoreapi.com/products', product)
+        createProduct(product)
             .then((response) => {
                 response.data.rating = product.rating;
                 this.setState({
-                    products: [response.data, ...this.state.products],
-                    filteredProducts: [response.data, ...this.state.filteredProducts ],
+                    products: [response.data.data, ...this.state.products],
+                    filteredProducts: [response.data.data, ...this.state.filteredProducts ],
                     showAddProductDialog: false
                 })
             })
@@ -114,6 +137,7 @@ class Home extends Component {
                             <div className='category-filter'>              
                                 {/* Filter Products based on Category selected */}
                                 <FilterProducts
+                                    categories={this.state.categories}
                                     currentFilter={this.state.currentFilter}
                                     setFilter={this.setFilter}
                                     handleAddProduct={() => this.setState({ showAddProductDialog: true })}

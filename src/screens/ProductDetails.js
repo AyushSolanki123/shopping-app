@@ -11,6 +11,7 @@ import ProductDetail from '../components/Product/ProductDetail';
 import DeleteProductDialog from '../components/Product/DeleteProductDialog';
 import EditProductDialog from '../components/Product/EditProductDialog';
 import '../css/ProductDetails.css';
+import { deleteProduct, getProduct, updateProduct } from '../utils/ApiActions';
 
 class ProductDetails extends Component {
 
@@ -30,7 +31,7 @@ class ProductDetails extends Component {
     componentDidMount() {
         var id = localStorage.getItem("productId");
         this.setState({ id: id })
-        axios.get(`https://fakestoreapi.com/products/${id}`)
+        getProduct(id)
             .then((response) => {
                 this.setState({
                     product: response.data,
@@ -53,25 +54,24 @@ class ProductDetails extends Component {
     // Delete the product from the api
     deleteProductHandler() {
         this.setState({ showDeleteDialog: false });
-        var config = {
-            method: "DELETE",
-            url: 'https://fakestoreapi.com/products/' + this.state.id
-        }
-        axios(config)
-            .then((response => {console.log(response)}))
-            .catch((err) => console.log(err));
-
-        this.backToHome();
+        deleteProduct(this.state.id)
+            .then((response => {
+                console.log(response)
+                this.backToHome();
+            }))
+            .catch((err) => {
+                console.log(err)
+            });
     }
 
     // Edit the product from the api and set the edited value on the frontend
     editProductHandler(product) {
-        var rating = product.rating;
+        console.log(product)
         this.setState({ showEditDialog: false });        
-        axios.put('https://fakestoreapi.com/products/' + this.state.id, product)
-            .then((response) => {               
-                response.data = Object.assign(response.data, {rating: rating})
-                this.setState({product: product})
+        updateProduct(this.state.id, product)
+            .then((response) => {         
+                console.log(response.data)      
+                this.setState({product: response.data})
             })  
             .catch((err) => console.log(err));
     }
@@ -115,7 +115,7 @@ class ProductDetails extends Component {
                                         </Col>
                                         {/* Component to render product image */}
                                         <Col className='image' xs={4}>
-                                            <img src={this.state.product.image} alt="Product Image" className='product-image' />
+                                            <img src={this.state.product.imageUrl} alt="Product Image" className='product-image' />
                                         </Col>
                                         {/* Component that renders all product details and contains edit and delete button */}
                                         <ProductDetail 

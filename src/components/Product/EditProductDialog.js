@@ -8,12 +8,16 @@ export class AddProductDialog extends Component {
         super(props);
         this.state = {
             product: {
-                title: "",
+                name: "",
                 category: "",
                 description: "",
-                image: "", 
+                imageUrl: "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg", // hardcoding image
                 price: 0,
-                rating: {}
+                quantity: 0,
+                rating: { // Hardcoding rate value since users cannot rate product now
+                    rate: 4.1,
+                    count: 120
+                }
             }
         }
     }
@@ -46,10 +50,10 @@ export class AddProductDialog extends Component {
                                 as="input"
                                 type="string"
                                 placeholder="Enter Title"
-                                value={this.state.product.title}
+                                value={this.state.product.name}
                                 onChange={(event) => this.setState(prevState => {
                                     let product = {...prevState.product};
-                                    product.title = event.target.value;
+                                    product.name = event.target.value;
                                     return { product };
                                 })}
                             />
@@ -96,6 +100,20 @@ export class AddProductDialog extends Component {
                                 onChange={(event) => this.setState(prevState => {
                                     let product = {...prevState.product};
                                     product.price = event.target.value;
+                                    return { product };
+                                })}
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Enter Quantity</Form.Label>
+                            <Form.Control
+                                as="input"
+                                type="string"
+                                placeholder="Enter Price"
+                                value={this.state.product.quantity}
+                                onChange={(event) => this.setState(prevState => {
+                                    let product = {...prevState.product};
+                                    product.quantity = event.target.value;
                                     return { product };
                                 })}
                             />

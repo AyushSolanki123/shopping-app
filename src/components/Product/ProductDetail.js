@@ -3,16 +3,21 @@ import { Col, Row } from 'react-bootstrap';
 import { Button,  Rating } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import capitalize from '../../utils/CapitalizeText';
 
 export class ProductDetail extends Component {
     render() {
         return (
             <Col className='product-details' xs={5}>
                 {/* Product title */}
-                <div className='product-title mb-3'>{this.props.product.title}</div>
+                <div className='product-title mb-3'>{this.props.product.name}</div>
                 {/* product price */}
                 <div className='mb-2'>
                     <span className='text-bold'>Price: </span>$ {this.props.product.price}
+                </div>
+                {/* product quantity */}
+                <div className='mb-2'>
+                    <span className='text-bold'>Quantity: </span> {this.props.product.quantity}
                 </div>
                 {/* Product description */}
                 <div className='mb-2'>
@@ -22,7 +27,7 @@ export class ProductDetail extends Component {
                 {/* Product Category */}
                 <div className='mb-2'>
                     <span className='text-bold'>Category: </span>
-                    {this.props.product.category}
+                    {capitalize(this.props.product.category.name)}
                 </div>
                 {/* Product ratings */}
                 <div className='mb-5'>

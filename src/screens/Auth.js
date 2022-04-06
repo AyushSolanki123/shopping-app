@@ -5,6 +5,7 @@ import Register from '../components/Auth/Register';
 import axios from 'axios';
 import { Navigate } from 'react-router';
 import { loginUser, registerUser } from '../utils/ApiActions';
+import { Image } from 'react-bootstrap';
 
 export class Auth extends Component {
 
@@ -67,7 +68,10 @@ export class Auth extends Component {
           {!this.state.loginDone &&        
             <div className='auth-card'>
                 <div className='card-section col separator'>
-                    text
+                    <Image 
+                        style={{justifyContent: 'center', display: 'flex', flex: 1}}
+                        src='https://img.icons8.com/external-smashingstocks-circular-smashing-stocks/130/000000/external-shopper-shopping-and-e-commerce-smashingstocks-circular-smashing-stocks.png' 
+                    />
                 </div>
                 <div className='card-section col'>
                     {this.state.isLogin &&

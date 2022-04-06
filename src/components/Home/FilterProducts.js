@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Dropdown, Row, Col, Button } from 'react-bootstrap';
+import capitalize from '../../utils/CapitalizeText';
 
 export class FilterProducts extends Component {
 
@@ -14,13 +15,12 @@ export class FilterProducts extends Component {
                             {this.props.currentFilter}
                         </Dropdown.Toggle>
 
-                        {/* Different Category to select from */}
+                        {/* Different Category to select from */}                        
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => this.props.setFilter("All")}>All</Dropdown.Item>
-                            <Dropdown.Item onClick={() => this.props.setFilter("Men's Clothing")}>Men's Clothing</Dropdown.Item>
-                            <Dropdown.Item onClick={() => this.props.setFilter("Jewelery")}>Jewelery</Dropdown.Item>
-                            <Dropdown.Item onClick={() => this.props.setFilter('Electronics')}>Electronics</Dropdown.Item>
-                            <Dropdown.Item onClick={() => this.props.setFilter("Women's Clothing")}>Women's Clothing</Dropdown.Item>
+                            <Dropdown.Item onClick={() => this.props.setFilter("All")}>All</Dropdown.Item>   
+                            {this.props.categories.data.map(category => {                                                                
+                                return <Dropdown.Item key={category._id} onClick={() => this.props.setFilter(category._id)}>{capitalize(category.name)}</Dropdown.Item>
+                            })}
                         </Dropdown.Menu>
                     </Dropdown>
                 </Col>

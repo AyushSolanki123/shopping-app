@@ -15,7 +15,7 @@ class ProductCard extends Component {
 
     // Stores id in localstorage and set navigate to true to navigate to ProductDetails Screen
     handleNavigate() {
-        localStorage.setItem("productId", this.props.product.id)
+        localStorage.setItem("productId", this.props.product._id)
         this.setState({
             navigate: true
         })

@@ -123,12 +123,58 @@ export function deleteProduct(productId) {
     })
 }
 
+export function listCategories() {
+    return new Promise(function (resolve, reject) {
+        apiActionWithToken({
+            method: 'GET',
+            url: env.baseUrl + env.listCategories
+        })
+            .then((response) => {
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error)
+            })
+    })
+}
+
+export function searchProduct(productName) {
+    return new Promise(function (resolve, reject) {
+        apiActionWithToken({
+            method: 'GET',
+            url: env.baseUrl + env.searchProduct.replace('{productName}', productName)
+        })
+            .then((response) => {
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error)
+            })
+    })
+}
+
+export function filterProduct(category) {
+    return new Promise(function (resolve, reject) {
+        apiActionWithToken({
+            method: 'GET',
+            url: env.baseUrl + env.filterProduct.replace('{categoryId}', category)
+        })
+            .then((response) => {
+                resolve(response)
+            })
+            .catch(error => {
+                reject(error)
+            })
+    })
+}
+
+
 // Helper functions
 function apiActionWithToken(options) {
     return new Promise(function (resolve, reject) {
         let authToken = null;
         let refreshToken = null;
-        var tokenPair = localStorage.getItem('tokenPair')
+        var tokenPair = JSON.parse(localStorage.getItem('tokenPair'))
         if (tokenPair.authToken && tokenPair.refreshToken) {
             authToken = tokenPair.authToken;
             refreshToken = tokenPair.refreshToken;
