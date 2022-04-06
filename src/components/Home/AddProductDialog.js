@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, ModalBody, Button, ModalFooter, ModalTitle, Form, CloseButton } from 'react-bootstrap';
 import ModalHeader from 'react-bootstrap/esm/ModalHeader';
+import capitalize from '../../utils/CapitalizeText';
 
 export class AddProductDialog extends Component {
 
@@ -64,10 +65,9 @@ export class AddProductDialog extends Component {
                                     return { product };
                                 })}
                             >
-                                <option value="Men's Clothing">Men's Clothing</option>
-                                <option value="Jewelery">Jewelery</option>
-                                <option value="Electronics">Electronics</option>
-                                <option value="Women's Clothing">Women's Clothing</option>
+                                {this.props.categories.data.map((category) => {
+                                    return <option key={category._id} value={category._id}>{capitalize(category.name)}</option>
+                                })}
                             </Form.Select>
                         </Form.Group>
                         {/* Textarea type input for description */}

@@ -7,7 +7,8 @@ import AddProductDialog from '../components/Home/AddProductDialog';
 import Loading from '../components/Loading';
 import capitalize from '../utils/CapitalizeText';
 import '../css/Home.css';
-import { createProduct, filterProduct, getAllProducts, listCategories, searchProduct } from '../utils/ApiActions';
+import { createProduct, filterProduct, getAllProducts, listCategories, logOut, searchProduct } from '../utils/ApiActions';
+import { Navigate } from 'react-router';
 
 class Home extends Component {
 
@@ -20,11 +21,13 @@ class Home extends Component {
             search: "",
             currentFilter: 'All',
             showAddProductDialog: false, // Flag to show modal
-            categories: []
+            categories: [],
+            isLoggedIn: true
         }
         this.setFilter = this.setFilter.bind(this);
         this.searchProducts = this.searchProducts.bind(this);
         this.addProduct = this.addProduct.bind(this);
+        this.logout = this.logout.bind(this);
     }
 
     // GET call to API to get all products
@@ -35,12 +38,8 @@ class Home extends Component {
                     products: response.data,
                     filteredProducts: response.data,                    
                 });
+                return listCategories()
             })
-            .catch((err) => {
-                console.log(err);
-            });
-        
-        listCategories()
             .then((response) => {
                 this.setState({
                     categories: response.data,
@@ -48,6 +47,7 @@ class Home extends Component {
                 });
             })
             .catch((err) => {
+                this.setState({ loading: false })
                 console.log(err)
             })
     }
@@ -79,22 +79,20 @@ class Home extends Component {
 
     // Filter products based on search field
     searchProducts() {
-        this.setState({ loading: true })
         searchProduct(this.state.search.toLowerCase())
             .then((response) => {
                 this.setState({
                     filteredProducts: response.data.data,
-                    loading: false
                 })
             })
             .catch(err => {
-                this.setState({ loading: false })
                 console.log(err)
             })
     }
 
     // POST request to API to create a product and returned product is push to array
     addProduct(product) {
+        console.log(product)
         createProduct(product)
             .then((response) => {
                 response.data.rating = product.rating;
@@ -109,45 +107,63 @@ class Home extends Component {
             })
     }
 
+    logout() {
+        logOut()
+            .then((response) => {
+                this.setState({ isLoggedIn: false })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     render() {
         return (
             <React.Fragment>
-                {/* Navigation Bar */}
-                <NavBar />
-                {this.state.loading && 
-                    // Loading state while App waits for GET call
-                    <Loading />
+                {!this.state.isLoggedIn && 
+                    <Navigate to="/auth" replace={true} />
                 }
-                {!this.state.loading && 
-                    <React.Fragment>          
-                        {/* Add Product Dialog which contains form and emits the data */}
-                        <AddProductDialog
-                            showModal={this.state.showAddProductDialog}
-                            addProduct={this.addProduct}
-                            closeModal={() => this.setState({ showAddProductDialog: false })}
-                        />              
-                        <div className='home'>
-                            <div className='search'>
-                                {/* Filter Products based on search results */}
-                                <SearchProducts
-                                    handleSearchChange={(search) => this.setState({search: search})}
-                                    searchProducts={this.searchProducts}
-                                />
-                            </div>
-                            <div className='category-filter'>              
-                                {/* Filter Products based on Category selected */}
-                                <FilterProducts
+                {this.state.isLoggedIn &&
+                    <React.Fragment>
+                        {/* Navigation Bar */}
+                        <NavBar logout={this.logout} />
+                        {this.state.loading && 
+                            // Loading state while App waits for GET call
+                            <Loading />
+                        }
+                        {!this.state.loading && 
+                            <React.Fragment>          
+                                {/* Add Product Dialog which contains form and emits the data */}
+                                <AddProductDialog
                                     categories={this.state.categories}
-                                    currentFilter={this.state.currentFilter}
-                                    setFilter={this.setFilter}
-                                    handleAddProduct={() => this.setState({ showAddProductDialog: true })}
-                                />                                        
-                            </div>
-                            <div className='productList'>
-                                {/* List Filtered Products */}
-                                <ProductList products={this.state.filteredProducts} />
-                            </div>
-                        </div>
+                                    showModal={this.state.showAddProductDialog}
+                                    addProduct={this.addProduct}
+                                    closeModal={() => this.setState({ showAddProductDialog: false })}
+                                />              
+                                <div className='home'>
+                                    <div className='search'>
+                                        {/* Filter Products based on search results */}
+                                        <SearchProducts
+                                            handleSearchChange={(search) => this.setState({search: search})}
+                                            searchProducts={this.searchProducts}
+                                        />
+                                    </div>
+                                    <div className='category-filter'>              
+                                        {/* Filter Products based on Category selected */}
+                                        <FilterProducts
+                                            categories={this.state.categories}
+                                            currentFilter={this.state.currentFilter}
+                                            setFilter={this.setFilter}
+                                            handleAddProduct={() => this.setState({ showAddProductDialog: true })}
+                                        />                                        
+                                    </div>
+                                    <div className='productList'>
+                                        {/* List Filtered Products */}
+                                        <ProductList products={this.state.filteredProducts} />
+                                    </div>
+                                </div>
+                            </React.Fragment>
+                        }   
                     </React.Fragment>
                 }
             </React.Fragment>

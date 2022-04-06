@@ -175,7 +175,7 @@ function apiActionWithToken(options) {
         let authToken = null;
         let refreshToken = null;
         var tokenPair = JSON.parse(localStorage.getItem('tokenPair'))
-        if (tokenPair.authToken && tokenPair.refreshToken) {
+        if (tokenPair && tokenPair.authToken && tokenPair.refreshToken) {
             authToken = tokenPair.authToken;
             refreshToken = tokenPair.refreshToken;
             options.headers = {...options.headers, authorization: authToken};
@@ -184,23 +184,22 @@ function apiActionWithToken(options) {
                     resolve(apiResponse);
                 })
                 .catch(error => {
+                    console.log("ereor", error)
                     if (error?.response?.status === 401) {
                         refreshJWT(refreshToken)
                             .then(() => {
                                 apiActionWithToken(options);
                             })
                             .catch(error => {
+                                console.log("eror", error)
                                 reject(error);
-                                logOut()
                             });
                     } else {
                         reject(error);
-                        logOut()
                     }
                 });
         } else {
             reject('Unable to get the token pair');
-            logOut()
         }        
     });
 }
@@ -217,11 +216,10 @@ function refreshJWT(refreshToken) {
                     authToken: apiResponse.data.authToken,
                     refreshToken: refreshToken,
                 };
-                localStorage.setItem('tokenPair', tokenPair)  
+                localStorage.setItem('tokenPair', JSON.stringify(tokenPair))  
                 resolve()
             } else {
                 reject('Unable to refresh the token at the moment');
-                logOut()
             }
         })
         .catch(error => {

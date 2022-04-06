@@ -68,10 +68,15 @@ export class Auth extends Component {
           {!this.state.loginDone &&        
             <div className='auth-card'>
                 <div className='card-section col separator'>
-                    <Image 
-                        style={{justifyContent: 'center', display: 'flex', flex: 1}}
-                        src='https://img.icons8.com/external-smashingstocks-circular-smashing-stocks/130/000000/external-shopper-shopping-and-e-commerce-smashingstocks-circular-smashing-stocks.png' 
-                    />
+                    <div className='image'>
+                        <Image 
+                            className="col-7"
+                            src='https://img.icons8.com/external-smashingstocks-circular-smashing-stocks/130/000000/external-shopper-shopping-and-e-commerce-smashingstocks-circular-smashing-stocks.png' 
+                        />
+                        <div className="col-5 text-center"> 
+                            Your One Stop Solution
+                        </div>
+                    </div>
                 </div>
                 <div className='card-section col'>
                     {this.state.isLogin &&

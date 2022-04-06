@@ -11,7 +11,7 @@ import ProductDetail from '../components/Product/ProductDetail';
 import DeleteProductDialog from '../components/Product/DeleteProductDialog';
 import EditProductDialog from '../components/Product/EditProductDialog';
 import '../css/ProductDetails.css';
-import { deleteProduct, getProduct, updateProduct } from '../utils/ApiActions';
+import { deleteProduct, getProduct, listCategories, logOut, updateProduct } from '../utils/ApiActions';
 
 class ProductDetails extends Component {
 
@@ -23,23 +23,33 @@ class ProductDetails extends Component {
             navigate: false, // Flag to handle back button
             showDeleteDialog: false, // Flag to show delete product dialog
             showEditDialog: false, // Flag to show edit product dialog
-            product: {}
+            product: {},
+            categories: [],
+            isLoggedIn: true
         }
+        this.logout = this.logout.bind(this);
     }
 
     // Get the product details from api whose id is stored in localstorage
     componentDidMount() {
         var id = localStorage.getItem("productId");
-        this.setState({ id: id })
         getProduct(id)
             .then((response) => {
                 this.setState({
-                    product: response.data,
-                    loading: false
+                    id: id,
+                    product: response.data
                 });               
+                return listCategories()
+            })
+            .then((response) => {
+                this.setState({
+                    categories: response.data,
+                    loading: false
+                });
             })
             .catch((err) => {
-                console.log(err);
+                this.setState({ loading: false })
+                console.log(err)
             })
     }
 
@@ -66,68 +76,85 @@ class ProductDetails extends Component {
 
     // Edit the product from the api and set the edited value on the frontend
     editProductHandler(product) {
-        console.log(product)
         this.setState({ showEditDialog: false });        
         updateProduct(this.state.id, product)
             .then((response) => {         
-                console.log(response.data)      
                 this.setState({product: response.data})
             })  
             .catch((err) => console.log(err));
     }
 
+    
+    logout() {
+        logOut()
+            .then((response) => {
+                this.setState({ isLoggedIn: false })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     render() {
         return (
             <React.Fragment>
-                {/* Navigation bar */}
-                <NavBar />
-                {/* Loading State while page get product from api */}
-                {this.state.loading && <Loading />}
-                {!this.state.loading &&             
+                {!this.state.isLoggedIn && 
+                    <Navigate to="/auth" replace={true} />
+                }
+                {this.state.isLoggedIn &&
                     <React.Fragment>
-                        {/* Delete product dialog which contains buttons to delete product */}
-                        <DeleteProductDialog 
-                            showModal={this.state.showDeleteDialog}
-                            closeModal={() => this.setState({ showDeleteDialog: false })}
-                            deleteProduct={() => this.deleteProductHandler()}
-                        />
-                        {/* Edit product dialog which conatins form and emits the data */}
-                        <EditProductDialog 
-                            product={this.state.product}
-                            showModal={this.state.showEditDialog}
-                            closeModal={() => this.setState({ showEditDialog: false })}
-                            editProduct={(product) => this.editProductHandler(product)}
-                        />
-                        {this.state.navigate && 
-                            // component that navigates back to home page
-                            <Navigate to="/" replace={true} />    
+                        {/* Navigation bar */}
+                        <NavBar logout={this.logout} />
+                        {/* Loading State while page get product from api */}
+                        {this.state.loading && <Loading />}
+                        {!this.state.loading &&             
+                            <React.Fragment>
+                                {/* Delete product dialog which contains buttons to delete product */}
+                                <DeleteProductDialog 
+                                    showModal={this.state.showDeleteDialog}
+                                    closeModal={() => this.setState({ showDeleteDialog: false })}
+                                    deleteProduct={() => this.deleteProductHandler()}
+                                />
+                                {/* Edit product dialog which conatins form and emits the data */}
+                                <EditProductDialog 
+                                    categories={this.state.categories}
+                                    product={this.state.product}
+                                    showModal={this.state.showEditDialog}
+                                    closeModal={() => this.setState({ showEditDialog: false })}
+                                    editProduct={(product) => this.editProductHandler(product)}
+                                />
+                                {this.state.navigate && 
+                                    // component that navigates back to home page
+                                    <Navigate to="/" replace={true} />    
+                                }
+                                {!this.state.navigate &&
+                                    // Main page
+                                    <div className="body">
+                                        <Card className="row main-card">
+                                            <Row>
+                                                {/* back button to navigate back to home page */}
+                                                <Col xs={1}>
+                                                    <IconButton aria-label='back' onClick={() => this.backToHome()}>
+                                                        <ArrowBackIosNewIcon />
+                                                    </IconButton>
+                                                </Col>
+                                                {/* Component to render product image */}
+                                                <Col className='image' xs={4}>
+                                                    <img src={this.state.product.imageUrl} alt="Product Image" className='product-image' />
+                                                </Col>
+                                                {/* Component that renders all product details and contains edit and delete button */}
+                                                <ProductDetail 
+                                                    product={this.state.product} 
+                                                    showDelete={() => this.setState({ showDeleteDialog: true })}
+                                                    showEdit={() => this.setState({ showEditDialog: true })}
+                                                />                               
+                                            </Row>
+                                        </Card>
+                                    </div>
+                                }
+                            </React.Fragment>    
                         }
-                        {!this.state.navigate &&
-                            // Main page
-                            <div className="body">
-                                <Card className="row main-card">
-                                    <Row>
-                                        {/* back button to navigate back to home page */}
-                                        <Col xs={1}>
-                                            <IconButton aria-label='back' onClick={() => this.backToHome()}>
-                                                <ArrowBackIosNewIcon />
-                                            </IconButton>
-                                        </Col>
-                                        {/* Component to render product image */}
-                                        <Col className='image' xs={4}>
-                                            <img src={this.state.product.imageUrl} alt="Product Image" className='product-image' />
-                                        </Col>
-                                        {/* Component that renders all product details and contains edit and delete button */}
-                                        <ProductDetail 
-                                            product={this.state.product} 
-                                            showDelete={() => this.setState({ showDeleteDialog: true })}
-                                            showEdit={() => this.setState({ showEditDialog: true })}
-                                        />                               
-                                    </Row>
-                                </Card>
-                            </div>
-                        }
-                    </React.Fragment>    
+                    </React.Fragment>
                 }
             </React.Fragment>
         )

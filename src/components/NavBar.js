@@ -1,7 +1,9 @@
+import { IconButton } from '@mui/material';
 import React from 'react';
 import { Container, Navbar } from 'react-bootstrap';
+import LogoutIcon from '@mui/icons-material/Logout';
 
-function NavBar() {
+function NavBar(props) {
     return (
         <Navbar bg="primary" variant="dark">
             <Container>
@@ -13,6 +15,12 @@ function NavBar() {
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="/product">Products</Nav.Link>
                     </Nav> */}
+                <Navbar.Toggle />
+                    <Navbar.Collapse className="justify-content-end">
+                    <IconButton onClick={() => props.logout()}>
+                        <LogoutIcon />
+                    </IconButton>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     );

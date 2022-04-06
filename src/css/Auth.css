@@ -17,6 +17,15 @@
     flex-direction: row !important;
 }
 
+.image { 
+    height: 100%;
+    flex:1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 .card-section {
     padding: 16px;    
 }
