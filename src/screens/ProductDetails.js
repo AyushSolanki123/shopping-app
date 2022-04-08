@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import axios from 'axios';
 import React, { Component } from 'react';
 import { IconButton } from '@mui/material';
 import { Card, Col, Row } from 'react-bootstrap';

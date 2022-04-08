@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../css/Auth.css'
 import Login from '../components/Auth/Login';
 import Register from '../components/Auth/Register';
-import axios from 'axios';
 import { Navigate } from 'react-router';
 import { loginUser, registerUser } from '../utils/ApiActions';
 import { Image } from 'react-bootstrap';
