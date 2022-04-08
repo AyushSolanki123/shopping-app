@@ -33,6 +33,8 @@ export class SearchProducts extends Component {
                 <Button variant="outline-secondary" id="button-addon2" onClick={() => this.props.searchProducts()}>
                     Search
                 </Button>
+                                        
+
             </InputGroup>
         );
     }
