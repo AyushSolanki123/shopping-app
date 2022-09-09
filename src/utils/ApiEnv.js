@@ -1,5 +1,5 @@
 const env = {
-    baseUrl: 'http://localhost:3000/api',
+    baseUrl: 'http://localhost:3004/api',
     login: '/user/login',
     register: '/user/register',
     refreshToken: '/user/refreshToken',
